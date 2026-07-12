@@ -1,0 +1,15 @@
+# Wander is a stdin-driven interactive fiction interpreter: the fuzzed input is the player's command
+# stream, delivered on STDIN (no `@@`, so Mayhem fuzzes stdin). The world/state machine is loaded
+# from the a3.misc / a3.wrld pair shipped in the image at /mayhem (read-only reads; the interpreter
+# writes its monitor/save scratch under /tmp, never the image dir). This is a raw file-input CLI
+# target (same form as the original integration), so the binary is its own reproducer — no
+# libFuzzer engine.
+project: wander
+target: Wander
+
+cmds:
+  - cmd: /mayhem/Wander /mayhem/a3   # mayhem-lint: ok-image-path (world basename → reads /mayhem/a3.misc + a3.wrld; scratch goes to /tmp)
+
+testsuite:
+  - https://$MAYHEM_DOMAIN/$MAYHEM_PROJECT/$MAYHEM_TARGET/testsuite.tar
+  - file://mayhem/Wander/testsuite
